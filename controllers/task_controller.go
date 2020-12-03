@@ -19,12 +19,18 @@ package controllers
 import (
 	"context"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/go-logr/logr"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	tektondevv1beta1 "github.com/tektoncd/pipeline/pkg/apis/pipeline/v1beta1"
+)
+
+var (
+	jobOwnerKey = ".metadata.controller"
+	apiGVStr    = tektondevv1beta1.SchemeGroupVersion.String()
 )
 
 // TaskReconciler reconciles a Task object
@@ -38,10 +44,20 @@ type TaskReconciler struct {
 // +kubebuilder:rbac:groups=tekton.dev.my.domain,resources=tasks/status,verbs=get;update;patch
 
 func (r *TaskReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
-	_ = context.Background()
+	ctx := context.Background()
 	_ = r.Log.WithValues("task", req.NamespacedName)
 
-	// your logic here
+	var task tektondevv1beta1.Task
+	if err := r.Get(
+		ctx,
+		req.NamespacedName,
+		&task,
+	); err != nil {
+		r.Log.Error(err, "unable to get task")
+		return ctrl.Result{}, err
+	}
+
+	spew.Dump(task)
 
 	return ctrl.Result{}, nil
 }

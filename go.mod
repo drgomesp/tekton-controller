@@ -3,6 +3,7 @@ module github.com/drgomesp/tekton-controller
 go 1.15
 
 require (
+	github.com/davecgh/go-spew v1.1.1
 	github.com/go-logr/logr v0.2.1
 	github.com/go-logr/zapr v0.3.0 // indirect
 	github.com/onsi/ginkgo v1.14.1
